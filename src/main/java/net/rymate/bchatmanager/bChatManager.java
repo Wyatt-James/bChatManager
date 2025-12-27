@@ -2,8 +2,8 @@ package net.rymate.bchatmanager;
 
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
+import org.mvplugins.multiverse.core.world.*;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -40,7 +40,7 @@ public class bChatManager extends JavaPlugin {
     private YamlConfiguration config;
     private boolean factions;
     private boolean mv;
-    private MultiverseCore core;
+    private MultiverseCoreApi core;
     private PluginCommand meCmd;
 
     public void onEnable() {
@@ -63,7 +63,7 @@ public class bChatManager extends JavaPlugin {
         //check if Multiverse-Core is installed
         if (this.getServer().getPluginManager().isPluginEnabled("Multiverse-Core")) {
             mv = true;
-            core = (MultiverseCore) getServer().getPluginManager().getPlugin("Multiverse-Core");
+            core = MultiverseCoreApi.get();
         }
 
         System.out.println("[bChatManager] Enabled");
@@ -124,10 +124,10 @@ public class bChatManager extends JavaPlugin {
 
         MultiverseWorld mvWorld = null;
         if (mv) {
-            mvWorld = core.getMVWorldManager().getMVWorld(player.getWorld());
+            mvWorld = core.getWorldManager().getWorld(player.getWorld()).getOrElse((MultiverseWorld) null);
         }
         if (mvWorld != null) {
-            format = format.replaceAll("%mvworld", mvWorld.getColoredWorldString());
+            format = format.replaceAll("%mvworld", mvWorld.getAliasOrName());
         } else {
             format = format.replaceAll("%mvworld", "");
         }
